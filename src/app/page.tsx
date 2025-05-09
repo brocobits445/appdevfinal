@@ -1,106 +1,205 @@
-import { Button } from '@/components/ui/button';
-import React from 'react';
-import Image from "next/image";
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+import { ApexOptions } from 'apexcharts';
+
+// Dynamically import ReactApexChart with SSR disabled
+const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
+
+interface Geo {
+  lat: string;
+  lng: string;
+}
+
+interface Address {
+  street: string;
+  suite: string;
+  city: string;
+  zipcode: string;
+  geo: Geo;
+}
+
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  address: Address;
+}
+
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
+
+interface Comment {
+  postId: number;
+  id: number;
+  name: string;
+  email: string;
+  body: string;
+}
+
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col items-center justify-between p-24 bg-gray-100">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedUserGeo, setSelectedUserGeo] = useState<Geo | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [postComments, setPostComments] = useState<Comment[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const usersResponse = await fetch('https://jsonplaceholder.typicode.com/users');
+        const postsResponse = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const commentsResponse = await fetch('https://jsonplaceholder.typicode.com/comments');
+
+        if (!usersResponse.ok || !postsResponse.ok || !commentsResponse.ok) {
+          throw new Error('Failed network request.');
+        }
+
+        const usersData: User[] = await usersResponse.json();
+        const postsData: Post[] = await postsResponse.json();
+        const commentsData: Comment[] = await commentsResponse.json();
+
+        setUsers(usersData);
+        setPosts(postsData);
+        setPostComments(commentsData);
+        setLoading(false);
+      } catch (e) {
+        setError('Failed to fetch data.');
+        setLoading(false);
+        console.error('Fetch error:', e);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleUserClick = (user: User) => {
+    setSelectedUserGeo(user.address.geo);
+  };
+
+  const handlePostClick = async (post: Post) => {
+    setSelectedPost(post);
+    try {
+      const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${post.id}/comments`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const commentsData: Comment[] = await response.json();
+      setPostComments(commentsData);
+    } catch (e) {
+      console.error('Failed to fetch comments:', e);
+      setPostComments([]);
+    }
+  };
+
+  const totalUsersOptions: ApexOptions = {
+    chart: { type: 'bar', height: 100 },
+    xaxis: { categories: ['Users'] },
+    yaxis: { title: { text: 'Count' } },
+  };
+
+  const totalPostsOptions: ApexOptions = {
+    chart: { type: 'bar', height: 100 },
+    xaxis: { categories: ['Posts'] },
+    yaxis: { title: { text: 'Count' } },
+  };
+
+  const totalCommentsOptions: ApexOptions = {
+    chart: { type: 'bar', height: 100 },
+    xaxis: { categories: ['Comments'] },
+    yaxis: { title: { text: 'Count' } },
+  };
+
+  const totalUsersSeries = [{ name: 'Total Users', data: [users.length] }];
+  const totalPostsSeries = [{ name: 'Total Posts', data: [posts.length] }];
+  const totalCommentsSeries = [{ name: 'Total Comments', data: [postComments.length] }];
+
+  if (loading) return <div>Loading users and posts...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <div className="mt-8 flex flex-wrap justify-around w-full">
+        <div className="w-full md:w-1/3 p-4">
+          <ReactApexChart options={totalUsersOptions} series={totalUsersSeries} type="bar" height={100} />
         </div>
-        <Button>Click Me</Button> {/* Added ShadCN UI Button */}
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <div className="w-full md:w-1/3 p-4">
+          <ReactApexChart options={totalPostsOptions} series={totalPostsSeries} type="bar" height={100} />
+        </div>
+        <div className="w-full md:w-1/3 p-4">
+          <ReactApexChart options={totalCommentsOptions} series={totalCommentsSeries} type="bar" height={100} />
+        </div>
+      </div>
+
+      <div className="mt-8 flex flex-col md:flex-row">
+        <div className="mr-8">
+          <h2 className="text-2xl font-bold mb-4">Users</h2>
+          <ul>
+            {users.map((user) => (
+              <li key={user.id} className="cursor-pointer hover:underline" onClick={() => handleUserClick(user)}>
+                {user.name} ({user.username})
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {selectedUserGeo && (
+          <div className="mt-8 md:mt-0">
+            <h2 className="text-2xl font-bold mb-4">User Location</h2>
+            <p>Latitude: {selectedUserGeo.lat}</p>
+            <p>Longitude: {selectedUserGeo.lng}</p>
+            <p className="text-sm mt-2">
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${selectedUserGeo.lat},${selectedUserGeo.lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline text-blue-500"
+              >
+                Open in Google Maps
+              </a>
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-8 w-full">
+        <h2 className="text-2xl font-bold mb-4">Posts</h2>
+        <ul>
+          {posts.map((post) => (
+            <li key={post.id} className="cursor-pointer hover:underline mb-2" onClick={() => handlePostClick(post)}>
+              {post.title}
+            </li>
+          ))}
+        </ul>
+
+        {selectedPost && (
+          <div className="mt-8 p-4 border rounded">
+            <h3 className="text-xl font-bold mb-2">{selectedPost.title}</h3>
+            <p className="mb-4">{selectedPost.body}</p>
+            <h4 className="text-lg font-bold mb-2">Comments</h4>
+            {postComments.length > 0 ? (
+              <ul>
+                {postComments.map((comment) => (
+                  <li key={comment.id} className="mb-2 border-b pb-2">
+                    <p className="font-semibold">{comment.name} ({comment.email})</p>
+                    <p className="text-sm">{comment.body}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No comments for this post.</p>
+            )}
+          </div>
+        )}
+      </div>
+    </main>
   );
 }
