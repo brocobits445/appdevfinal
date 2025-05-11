@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { ApexOptions } from 'apexcharts';
+import { useRouter } from 'next/navigation';
 
-// Dynamically import ReactApexChart with SSR disabled
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 interface Geo {
@@ -25,6 +25,7 @@ interface User {
   name: string;
   username: string;
   email: string;
+  phone: string;
   address: Address;
 }
 
@@ -43,13 +44,13 @@ interface Comment {
   body: string;
 }
 
-
 export default function Home() {
+  const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedUserGeo, setSelectedUserGeo] = useState<Geo | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [postComments, setPostComments] = useState<Comment[]>([]);
 
@@ -84,7 +85,7 @@ export default function Home() {
   }, []);
 
   const handleUserClick = (user: User) => {
-    setSelectedUserGeo(user.address.geo);
+    setSelectedUser(user);
   };
 
   const handlePostClick = async (post: Post) => {
@@ -98,6 +99,10 @@ export default function Home() {
       console.error('Failed to fetch comments:', e);
       setPostComments([]);
     }
+  };
+
+  const handleLogout = () => {
+    router.push('/login'); // Redirect to the login page
   };
 
   const totalUsersOptions: ApexOptions = {
@@ -127,6 +132,13 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <button
+        onClick={handleLogout} // Logout button
+        className="mb-4 px-4 py-2 bg-red-500 text-white rounded"
+      >
+        Logout
+      </button>
+
       <div className="mt-8 flex flex-wrap justify-around w-full">
         <div className="w-full md:w-1/3 p-4">
           <ReactApexChart options={totalUsersOptions} series={totalUsersSeries} type="bar" height={100} />
@@ -151,21 +163,31 @@ export default function Home() {
           </ul>
         </div>
 
-        {selectedUserGeo && (
+        {selectedUser && (
           <div className="mt-8 md:mt-0">
-            <h2 className="text-2xl font-bold mb-4">User Location</h2>
-            <p>Latitude: {selectedUserGeo.lat}</p>
-            <p>Longitude: {selectedUserGeo.lng}</p>
-            <p className="text-sm mt-2">
-              <a
-                href={`https://www.google.com/maps/search/?api=1&query=${selectedUserGeo.lat},${selectedUserGeo.lng}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline text-blue-500"
-              >
-                Open in Google Maps
-              </a>
+            <h2 className="text-2xl font-bold mb-4">User Details</h2>
+            <p>
+              <strong>Username:</strong> {selectedUser.username}
             </p>
+            <p>
+              <strong>Email:</strong> {selectedUser.email}
+            </p>
+            <p>
+              <strong>Phone:</strong> {selectedUser.phone}
+            </p>
+            <p>
+              <strong>Address:</strong> {`${selectedUser.address.street}, ${selectedUser.address.suite}, ${selectedUser.address.city}, ${selectedUser.address.zipcode}`}
+            </p>
+            <h3 className="text-lg font-bold mt-4">Location on Google Map</h3>
+            <iframe
+              title="Google Map"
+              src={`https://www.google.com/maps?q=${selectedUser.address.geo.lat},${selectedUser.address.geo.lng}&z=15&output=embed`}
+              width="100%"
+              height="300"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+            ></iframe>
           </div>
         )}
       </div>
