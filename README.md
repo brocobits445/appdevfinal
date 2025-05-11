@@ -8,9 +8,6 @@ This project is a web application that displays user data, posts, and comments f
 - Posts and comments with dynamic fetching.
 - Interactive charts using ApexCharts.
   
-If other team members contributed to the project, you can document their contributions in the **Team Member Contributions** section of the `README.md` file. Here's how you can include their roles and contributions:
-
----
 
 ### **Team Member Contributions**
 1. **Alder Clemente**:
