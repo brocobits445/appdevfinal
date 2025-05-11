@@ -37,7 +37,6 @@ If other team members contributed to the project, you can document their contrib
 
 4. **Wilfredo Magollado**:
    - Provided feedback on UI/UX design and suggested improvements.
-   - Assisted with writing the **README.md** documentation.
    - Helped test the application for edge cases and bugs.
 
 ---
