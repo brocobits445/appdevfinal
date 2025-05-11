@@ -8,18 +8,6 @@ This project is a web application that displays user data, posts, and comments f
 - Posts and comments with dynamic fetching.
 - Interactive charts using ApexCharts.
 
-## Setup and Installation Instructions
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/brocobits445/appdevfinal.git
-
-Yes, the **Setup and Installation Instructions** provided earlier are correct for your project. However, let me tailor them specifically for your project based on the provided code and structure.
-
----
-
-### **Updated Setup and Installation Instructions**
-Here’s the refined version:
-
 #### **Setup and Installation Instructions**
 1. **Clone the Repository**:
    - Use the following command to clone the repository to your local machine:
