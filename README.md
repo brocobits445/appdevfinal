@@ -1,3 +1,17 @@
+# AppDev Final Project
+
+## Project Description
+This project is a web application that displays user data, posts, and comments fetched from JSONPlaceholder. It includes interactive charts and responsive layouts.
+
+## Features
+- User list with detailed information and Google Maps integration.
+- Posts and comments with dynamic fetching.
+- Interactive charts using ApexCharts.
+
+## Setup and Installation Instructions
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/brocobits445/appdevfinal.git
 <<<<<<< HEAD
 <<<<<<< HEAD
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
