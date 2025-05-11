@@ -7,6 +7,12 @@ This project is a web application that displays user data, posts, and comments f
 - User list with detailed information and Google Maps integration.
 - Posts and comments with dynamic fetching.
 - Interactive charts using ApexCharts.
+  
+## Team member contributions
+-John Michael De Vera =
+-Wilfredo Magollado =
+-Lee Aaron Quipia =
+
 
 #### **Setup and Installation Instructions**
 1. **Clone the Repository**:
