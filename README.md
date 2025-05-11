@@ -8,10 +8,39 @@ This project is a web application that displays user data, posts, and comments f
 - Posts and comments with dynamic fetching.
 - Interactive charts using ApexCharts.
   
-## Team member contributions
--John Michael De Vera =
--Wilfredo Magollado =
--Lee Aaron Quipia =
+If other team members contributed to the project, you can document their contributions in the **Team Member Contributions** section of the `README.md` file. Here's how you can include their roles and contributions:
+
+---
+
+### **Team Member Contributions**
+1. **Alder Clemente**:
+   - Designed and implemented the entire project structure.
+   - Developed the **Users Section**, including:
+     - Fetching and displaying user data from JSONPlaceholder.
+     - Added Google Maps integration for user locations.
+   - Developed the **Posts and Comments Section**, including:
+     - Fetching and displaying posts and comments dynamically.
+     - Styled the posts and comments for responsiveness.
+   - Integrated **ApexCharts** for visualizing user, post, and comment counts.
+   - Deployed the application to **Vercel** and ensured it is publicly accessible.
+
+2. **Lee Aaron Quipia**:
+   - Assisted with styling and responsiveness using **Tailwind CSS**.
+   - Helped debug issues in the **Comments Section**.
+   - Reviewed and tested the application for functionality and responsiveness.
+
+3. **John Michael De Vera**:
+   - Contributed to the **Charts Section**, including:
+     - Adjusting chart configurations for better visualization.
+     - Ensuring charts are responsive across devices.
+   - Helped with deployment and testing on **Vercel**.
+
+4. **Wilfredo Magollado**:
+   - Provided feedback on UI/UX design and suggested improvements.
+   - Assisted with writing the **README.md** documentation.
+   - Helped test the application for edge cases and bugs.
+
+---
 
 
 #### **Setup and Installation Instructions**
