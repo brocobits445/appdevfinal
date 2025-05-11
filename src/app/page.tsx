@@ -130,98 +130,109 @@ export default function Home() {
   if (loading) return <div>Loading users and posts...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <button
-        onClick={handleLogout} // Logout button
-        className="mb-4 px-4 py-2 bg-red-500 text-white rounded"
-      >
-        Logout
-      </button>
+return (
+  <main className="flex min-h-screen flex-col items-center justify-between p-8">
+    <button
+      onClick={handleLogout}
+      className="mb-8 px-4 py-2 bg-red-500 text-white rounded"
+    >
+      Logout
+    </button>
 
-      <div className="mt-8 flex flex-wrap justify-around w-full">
-        <div className="w-full md:w-1/3 p-4">
-          <ReactApexChart options={totalUsersOptions} series={totalUsersSeries} type="bar" height={100} />
-        </div>
-        <div className="w-full md:w-1/3 p-4">
-          <ReactApexChart options={totalPostsOptions} series={totalPostsSeries} type="bar" height={100} />
-        </div>
-        <div className="w-full md:w-1/3 p-4">
-          <ReactApexChart options={totalCommentsOptions} series={totalCommentsSeries} type="bar" height={100} />
-        </div>
+    {/* Charts Section */}
+    <div className="mt-8 flex flex-wrap justify-around w-full">
+      <div className="w-full md:w-1/3 p-4">
+        <ReactApexChart options={totalUsersOptions} series={totalUsersSeries} type="bar" height={100} />
       </div>
+      <div className="w-full md:w-1/3 p-4">
+        <ReactApexChart options={totalPostsOptions} series={totalPostsSeries} type="bar" height={100} />
+      </div>
+      <div className="w-full md:w-1/3 p-4">
+        <ReactApexChart options={totalCommentsOptions} series={totalCommentsSeries} type="bar" height={100} />
+      </div>
+    </div>
 
-      <div className="mt-8 flex flex-col md:flex-row">
-        <div className="mr-8">
-          <h2 className="text-2xl font-bold mb-4">Users</h2>
-          <ul>
-            {users.map((user) => (
-              <li key={user.id} className="cursor-pointer hover:underline" onClick={() => handleUserClick(user)}>
-                {user.name} ({user.username})
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {selectedUser && (
-          <div className="mt-8 md:mt-0">
-            <h2 className="text-2xl font-bold mb-4">User Details</h2>
-            <p>
-              <strong>Username:</strong> {selectedUser.username}
-            </p>
-            <p>
-              <strong>Email:</strong> {selectedUser.email}
-            </p>
-            <p>
-              <strong>Phone:</strong> {selectedUser.phone}
-            </p>
-            <p>
-              <strong>Address:</strong> {`${selectedUser.address.street}, ${selectedUser.address.suite}, ${selectedUser.address.city}, ${selectedUser.address.zipcode}`}
-            </p>
-            <h3 className="text-lg font-bold mt-4">Location on Google Map</h3>
-            <iframe
-              title="Google Map"
-              src={`https://www.google.com/maps?q=${selectedUser.address.geo.lat},${selectedUser.address.geo.lng}&z=15&output=embed`}
-              width="100%"
-              height="300"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-            ></iframe>
+    {/* Users Section */}
+    <div className="mt-8 w-full max-w-6xl">
+      <h2 className="text-2xl font-bold text-center mb-6">Users</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {users.map((user) => (
+          <div
+            key={user.id}
+            className="p-4 border rounded shadow-md bg-white text-center cursor-pointer hover:shadow-lg"
+            onClick={() => handleUserClick(user)}
+          >
+            <h3 className="font-bold">{user.name}</h3>
+            <p className="text-gray-600">({user.username})</p>
           </div>
-        )}
+        ))}
       </div>
 
-      <div className="mt-8 w-full">
-        <h2 className="text-2xl font-bold mb-4">Posts</h2>
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id} className="cursor-pointer hover:underline mb-2" onClick={() => handlePostClick(post)}>
-              {post.title}
-            </li>
-          ))}
-        </ul>
+      {selectedUser && (
+        <div className="mt-8 p-6 border rounded shadow-md bg-white">
+          <h2 className="text-2xl font-bold mb-4">User Details</h2>
+          <p>
+            <strong>Username:</strong> {selectedUser.username}
+          </p>
+          <p>
+            <strong>Email:</strong> {selectedUser.email}
+          </p>
+          <p>
+            <strong>Phone:</strong> {selectedUser.phone}
+          </p>
+          <p>
+            <strong>Address:</strong> {`${selectedUser.address.street}, ${selectedUser.address.suite}, ${selectedUser.address.city}, ${selectedUser.address.zipcode}`}
+          </p>
+          <h3 className="text-lg font-bold mt-4">Location on Google Map</h3>
+          <iframe
+            title="Google Map"
+            src={`https://www.google.com/maps?q=${selectedUser.address.geo.lat},${selectedUser.address.geo.lng}&z=15&output=embed`}
+            width="100%"
+            height="300"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+          ></iframe>
+        </div>
+      )}
+    </div>
 
-        {selectedPost && (
-          <div className="mt-8 p-4 border rounded">
-            <h3 className="text-xl font-bold mb-2">{selectedPost.title}</h3>
-            <p className="mb-4">{selectedPost.body}</p>
-            <h4 className="text-lg font-bold mb-2">Comments</h4>
-            {postComments.length > 0 ? (
-              <ul>
-                {postComments.map((comment) => (
-                  <li key={comment.id} className="mb-2 border-b pb-2">
-                    <p className="font-semibold">{comment.name} ({comment.email})</p>
-                    <p className="text-sm">{comment.body}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No comments for this post.</p>
-            )}
+    {/* Posts Section */}
+    <div className="mt-8 w-full max-w-6xl">
+      <h2 className="text-2xl font-bold text-center mb-6">Posts</h2>
+      <div className="space-y-6">
+        {posts.map((post) => (
+          <div
+            key={post.id}
+            className="p-6 border rounded shadow-md bg-white cursor-pointer hover:shadow-lg"
+            onClick={() => handlePostClick(post)}
+          >
+            <h3 className="font-bold text-lg mb-2">{post.title}</h3>
+            <p className="text-gray-700">{post.body}</p>
           </div>
-        )}
+        ))}
       </div>
-    </main>
-  );
+
+      {selectedPost && (
+        <div className="mt-8 p-6 border rounded shadow-md bg-white">
+          <h3 className="text-xl font-bold mb-2">{selectedPost.title}</h3>
+          <p className="mb-4">{selectedPost.body}</p>
+          <h4 className="text-lg font-bold mb-2">Comments</h4>
+          {postComments.length > 0 ? (
+            <ul className="space-y-4">
+              {postComments.map((comment) => (
+                <li key={comment.id} className="p-4 border rounded bg-gray-100">
+                  <p className="font-semibold">{comment.name} ({comment.email})</p>
+                  <p className="text-sm">{comment.body}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No comments for this post.</p>
+          )}
+        </div>
+      )}
+    </div>
+  </main>
+);
 }
