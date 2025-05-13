@@ -121,11 +121,6 @@ If someone wants to build the project for production, you can include these addi
 
 ---
 
-Let me know if you need further adjustments! 😊---
-
-Let me know if you need further adjustments! 😊
-<<<<<<< HEAD
-<<<<<<< HEAD
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
