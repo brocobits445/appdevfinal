@@ -42,7 +42,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       {/* Title */}
-      <h1 className="text-3xl font-bold mb-6">Welcome to our Final Project</h1>
+      <h1 className="text-3xl font-bold mb-6">Welcome to our Final Project in appdev</h1>
 
       <form onSubmit={handleLogin} className="p-6 bg-white shadow-md rounded w-96">
         <h1 className="text-2xl font-bold mb-4">Login</h1>
