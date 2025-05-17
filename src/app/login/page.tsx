@@ -40,6 +40,7 @@ export default function LoginPage() {
   };
 
   return (
+<<<<<<< HEAD
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-200 px-4">
       <div className="flex flex-col items-center w-full max-w-md">
         <h1 className="text-3xl font-bold mb-6 flex items-center gap-2 text-blue-700">
@@ -84,6 +85,11 @@ export default function LoginPage() {
             Login
           </button>
         </form>
+=======
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      {/* Title */}
+      <h1 className="text-3xl font-bold mb-6">Welcome to our Final Project in appdev</h1>
+>>>>>>> c069e47476ec07e41e94158bebd85db4435d054c
 
         <p className="mt-4 text-center">
           Are you an admin?{' '}
